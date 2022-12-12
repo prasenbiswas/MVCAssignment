@@ -1,0 +1,193 @@
+﻿@model IEnumerable<ShoppingWebsite.Models.Category>
+
+@{
+    ViewBag.Title = "Create";
+}
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<input type="hidden" id="hiddenDelete" />
+<input type="hidden" id="hiddenCategoryData" />
+
+<div style="margin-left:13%">
+    @*@Ajax.ActionLink("<-Back", "Index", "Category", new AjaxOptions()
+    {
+        HttpMethod = "Post",
+        InsertionMode = InsertionMode.Replace,
+        UpdateTargetId = "CreateList"
+    }, new { @class = "btn btn-dark mb-3" })*@
+
+    <span class="mb-3" style="font-size:x-large; font-weight:bold;">Category</span>
+
+        <table class="table mt-5 table-bordered table-hover table-striped" id="Category_Table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CategoryName)
+                        @Html.ValidationMessageFor(model => model.FirstOrDefault().CategoryName, "")
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Created_On)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr id="row_@item.CategoryId">
+                        <td class="categoryNametd">
+                            @Html.DisplayFor(modelItem => item.CategoryName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Created_On)
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-success" onclick="Edit(@item.CategoryId)" data-bs-toggle="modal" data-bs-target="#CategoryEditModal">
+                                Edit
+                            </button>
+                            &nbsp;
+                            <button type="submit" class="btn btn-danger" onclick="Delete(@item.CategoryId)" data-bs-toggle="modal" data-bs-target="#CategoryDeleteModal">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    <script src="~/Scripts/jquery-3.6.1.min.js"></script>
+    <script src="~/Scripts/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/dataTables.bootstrap5.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+</div>
+
+
+
+<!---------------------------------------------- Modal for Delete ------------------------------->
+<form id="Category_DeleteForm">
+
+<div class="modal fade" id="CategoryDeleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Are you sure want to delete?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" id="confirmDelete" class="btn btn-danger" data-bs-dismiss="modal">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+
+
+
+    @*----------------------------- Modal For Edit ---------------------------------------*@
+
+
+
+<form id="Category_EditForm">
+<div class="modal fade" id="CategoryEditModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body " style=" font-weight:bold;">
+                    Category Name: <input type="text" class="form-control" id="InputCategoryModel" />
+                    <p id="P1" style="color:red;"></p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" id="ConfirmEdit" class="btn btn-primary" >Save</button>
+                </div>
+        </div>
+    </div>
+</div>
+</form>
+
+
+
+@section Script{
+
+    <script>
+    $(document).ready(function () {
+        $("#Category_Table").dataTable();
+    });
+
+
+        //---------------- Delete Section -----------------
+
+        function Delete(CategoryId) {
+            $("#hiddenDelete").val(CategoryId);
+            //$("#CategoryDeleteModal").modal("show");
+            console.log(CategoryId);
+        }
+
+        $("#confirmDelete").click(() => {
+            var id = $("#hiddenDelete").val();
+           $.ajax({
+            type: 'POST',
+            url: '@Url.Action("Delete","Category")',
+               data: { Id: id },
+            success: function(){
+                console.log("Click");
+                $("#Category_DeleteForm").modal("hide");
+                 window.location.href = "/Category/Delete";
+            }
+           });
+        });
+
+
+        //------------------- Edit Section -------------------
+
+        function Edit(CategoryId) {
+            debugger;
+            $("#hiddenCategoryData").val(CategoryId);
+            //$("#CategoryEditModal").modal("show");
+            var name = $("#row_" + CategoryId).find(".categoryNametd").text();
+            //document.getElementById("#InputCategoryModel") = name.innerHtml;
+            $("#InputCategoryModel").val(name)
+        }
+        $("#ConfirmEdit").click(() => {
+            var id = $("#hiddenCategoryData").val();
+            var categoryName = $("#InputCategoryModel").val();
+            $("#row_" + id).find(".categoryNametd").text(categoryName);
+            //console.log(categoryName);
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("Edit","Category")',
+            data: { CategoryId: id, CategoryName: categoryName },
+            success: function () {
+                console.log("Click");
+                $("#Category_EditForm").modal("hide");
+              
+            }
+        });
+        });
+
+        //----------------------------- Validation
+
+        $(document).ready(function () {
+            $("#ConfirmEdit").click(function () {
+                var category = $("#InputCategoryModel").val();
+
+                if (category.length == "") {
+                    $("#P1").text("Please Enter Category Name!!")
+                    $("#InputCategoryModel").focus();
+                    return false;
+                }
+            });
+        });
+
+    </script>
+}

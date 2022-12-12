@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="~/Content/dataTables.bootstrap5.min.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <script src="~/Scripts/modernizr-2.8.3.js"></script>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top mb-4">
+        <div class="container-fluid d-flex justify-content-center align-items-center text-secondary">
+            <h3>Welcome To Shopping Website</h3>
+        </div>
+    </div>
+    <hr />
+
+    <div class="d-flex  flex-column col-4" style="width: 10%; position: absolute; top: 150px; height: 100%; left: 25px;">
+
+        @Ajax.ActionLink("Category", "Create", "Category", null, new AjaxOptions() { }, new { @class = "btn btn-secondary", id = "Category_Btn" })
+        <br />
+
+        @Ajax.ActionLink("Sub Category", "Index", "SubCategory", null, new AjaxOptions() { }, new { @class = "btn btn-secondary", id = "Category_Btn" })
+
+        <br />
+        @Ajax.ActionLink("Product", "Index", "Product", null, new AjaxOptions() { }, new { @class = "btn btn-secondary", id = "Category_Btn" })
+        <br />
+
+    </div>
+
+    @*@RenderSection("scripts", required: false)*@
+
+    <div class="container-fluid body-content">
+        @RenderBody()
+    </div>
+
+    <script src="~/Scripts/jquery-3.6.1.min.js"></script>
+    <script src="~/Scripts/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/dataTables.bootstrap5.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+
+
+    @*-----------------*@
+    <script src="~/Scripts/jquery.validate.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+    @RenderSection("Script", required: false)
+</body>
+</html>

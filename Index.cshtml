@@ -1,0 +1,27 @@
+﻿@model IEnumerable<ShoppingWebsite.Models.Category>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutForUser.cshtml";
+}
+
+
+@foreach (var item in Model)
+{
+    <div class="d-flex" style="flex-basis:content;">
+
+    <a href="@Url.Action("SubCategory", "User", new { id=item.CategoryId , @class="btn"})" style="text-decoration:none; color:black;">
+    <div class="card col-4 m-2 " style="width:18rem; height:255px; background-color:antiquewhite">
+        <div class="card-body d-flex justify-content-center align-items-center flex-column">
+            <div id="@item.CategoryId" onclick="">
+                <h2>
+                    @Html.DisplayFor(modelItem => item.CategoryName)
+                </h2>
+            </div>
+        </div>
+    </div>
+    </a>
+    </div>
+
+}
+
